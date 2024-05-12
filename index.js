@@ -1,14 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
 
+const { MongoClient, ServerApiVersion } = require('mongodb');
 // middleware
 app.use(cors());
 app.use(express.json());
 
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
+console.log(process.env.DB_USER, process.env.DB_PASS);
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mmuv9dp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,7 +26,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const jobCollection = client.db('jobEspial').collection('allJobs');
+    const jobCollection = client.db('JobEspial').collection('allJobs');
     // const categoryCollection = client.db('artDB').collection('artCategory');
 
     // app.get('/findJobs', async (req, res) => {
