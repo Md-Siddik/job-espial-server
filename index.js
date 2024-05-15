@@ -82,7 +82,7 @@ async function run() {
           job_title: updatedItem.job_title,
           job_category: updatedItem.job_category,
           salary_range: updatedItem.salary_range,
-          job_description:  updatedItem.job_description,
+          job_description: updatedItem.job_description,
           post_date: updatedItem.post_date,
           application_deadline: updatedItem.application_deadline,
           applicants_number: updatedItem.applicants_number
