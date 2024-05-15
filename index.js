@@ -28,12 +28,6 @@ async function run() {
     const jobCollection = client.db('JobEspial').collection('allJobs');
     // const appliedCollection = client.db('JobEspial').collection('appliedJobs');
 
-    // app.get('/findJobs', async (req, res) => {
-    //     const cursor = jobCollection.find();
-    //     const result = await cursor.toArray();
-    //     res.send(result);
-    //   })
-
     app.get('/allJobs', async (req, res) => {
       const cursor = jobCollection.find();
       const result = await cursor.toArray();
@@ -77,6 +71,28 @@ async function run() {
       res.send(result);
     })
 
+    app.put('/allJobs/update/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedItem = req.body;
+      const item = {
+        $set: {
+          picture: updatedItem.picture,
+          job_title: updatedItem.job_title,
+          job_category: updatedItem.job_category,
+          salary_range: updatedItem.salary_range,
+          job_description: updatedItem.job_description,
+          post_date: updatedItem.post_date,
+          application_deadline: updatedItem.application_deadline,
+          applicants_number: updatedItem.applicants_number
+        }
+      }
+      
+      const result = await jobCollection.updateOne(filter, item, options);
+      res.send(result);
+    })
+
     app.patch('/allJobs/:id', async(req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
@@ -94,7 +110,9 @@ async function run() {
           applicants_number: updatedItem.applicants_number,
           user_name: updatedItem.user_name,
           user_email: updatedItem.user_email,
-          resume_link: updatedItem.resume_link
+          resume_link: updatedItem.resume_link,
+          applicants_email: updatedItem.applicants_email,
+          applicants_name: updatedItem.applicants_name
         }
       }
       
@@ -102,35 +120,19 @@ async function run() {
       res.send(result);
     })
 
-    // app.post('/appliedJobs', async (req, res) => {
-    //   const newJob = req.body;
-    //   console.log(newJob);
-    //   const result = await appliedCollection.insertOne(newJob);
-    //   res.send(result);
-    // })
+    app.get('/allJobs/applied/:email', async (req, res) => {
+      const email = req.params.email;
+      const filter = {applicants_email: email}
+      const result = await jobCollection.findOne(filter)
+      res.send(result);
+    })
 
-    // app.put('/appliedJobs/:id', async(req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) }
-    //   const options = { upsert: true };
-    //   const updatedItem = req.body;
-    //   const item = {
-    //     $set: {
-    //       picture: updatedItem.picture,
-    //       job_title: updatedItem.job_title,
-    //       job_category: updatedItem.job_category,
-    //       salary_range: updatedItem.salary_range,
-    //       job_description: updatedItem.job_description,
-    //       post_date: updatedItem.post_date,
-    //       application_deadline: updatedItem.application_deadline,
-    //       applicants_number: updatedItem.applicants_number,
-    //       resume_link: updatedItem.resume_link
-    //     }
-    //   }
-      
-    //   const result = await appliedCollection.updateOne(filter, item, options);
-    //   res.send(result);
-    // })
+    app.delete('/allJobs/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await jobCollection.deleteOne(query);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
